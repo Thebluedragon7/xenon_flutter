@@ -1,4 +1,3 @@
-import 'dart:js';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
@@ -42,6 +41,7 @@ class _stppageState extends State<stppage> {
           elevation: 20.0,
           child: ListView(
             padding: EdgeInsets.zero,
+            shrinkWrap: true,
             children: [
               DrawerHeader(
                 decoration: BoxDecoration(
@@ -80,6 +80,7 @@ class _stppageState extends State<stppage> {
               ListView.builder(
                 itemCount: noble_gases.length,
                 scrollDirection: Axis.vertical,
+                shrinkWrap: true,
                 itemBuilder: (context, index) => ListTile(
                   onTap: () {
                     Navigator.push(
@@ -149,10 +150,13 @@ class _stppageState extends State<stppage> {
             ],
           ),
         ),
+        // body: Container(),
         body: CustomScrollView(
+          // shrinkWrap: true,
           slivers: [
             SliverAppBar(
               pinned: true,
+              toolbarHeight: 160,
               expandedHeight: 160,
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(
@@ -178,8 +182,10 @@ class _stppageState extends State<stppage> {
               centerTitle: true,
             ),
             SliverFillRemaining(
+              // fillOverscroll: true,
               child: GridView.count(
                   crossAxisCount: 2,
+                  shrinkWrap: true,
                   crossAxisSpacing: 2.0,
                   mainAxisSpacing: 10.0,
                   children: List.generate(nobleElements.length, (index) {
@@ -189,18 +195,18 @@ class _stppageState extends State<stppage> {
                     );
                   })),
             ),
-            ElevatedButton(
-              onPressed: () => this
-                  ._scaffoldKey
-                  .currentState
-                  .showBottomSheet((context) => _bottomSheetURL(context, this._controller.text)),
-              child: Center(
-                  child: Icon(
-                Icons.add,
-              )),
-            ),
+            // ElevatedButton(
+            //   onPressed: () => _scaffoldKey
+            //       .currentState
+            //       .showBottomSheet((context) => _bottomSheetURL(context, this._controller.text)),
+            //   child: Center(
+            //       child: Icon(
+            //     Icons.add,
+            //   )),
+            // ),
           ],
-        ));
+        )
+    );
   }
 }
 
@@ -237,7 +243,7 @@ Widget _bottomSheetURL(BuildContext context, String usrUrl) {
             label: Text('Go!'),
             onPressed: () {
               FocusScope.of(context).requestFocus(FocusNode());
-              _openURL('https://$usrUrl');
+              _openURL('https://$usrUrl', context);
             },
             ),
           
@@ -247,7 +253,7 @@ Widget _bottomSheetURL(BuildContext context, String usrUrl) {
   );
 }
 
-Future<void> _openURL(String url) async {
+Future<void> _openURL(String url, context) async {
   if (await url_launcher.canLaunch(url)) {
     Navigator.push(
       context,
@@ -285,10 +291,8 @@ class SelectNobleElement extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              child: Expanded(
-                child: Image(
-                  image: AssetImage(choosed.image),
-                ),
+              child: Image(
+                image: AssetImage(choosed.image),
               ),
               onTap: () {
                 int ino = ind;
